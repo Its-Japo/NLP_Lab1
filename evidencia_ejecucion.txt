@@ -1,0 +1,285 @@
+================================================================================
+DEMO: COMPARACION DE TOKENIZADORES
+================================================================================
+Texto:
+Mi numero es +502 5555-1234 y mi correo es ana@uvg.edu.gt
+
+Tokenizacion por espacios:
+['Mi', 'numero', 'es', '+502', '5555-1234', 'y', 'mi', 'correo', 'es', 'ana@uvg.edu.gt']
+
+Tokenizacion Regex basica:
+['mi', 'numero', 'es', '502', '5555', '1234', 'y', 'mi', 'correo', 'es', 'ana', 'uvg', 'edu', 'gt']
+
+Tokenizacion Regex mixta:
+['Mi', 'numero', 'es', '+', '502', '5555', '-', '1234', 'y', 'mi', 'correo', 'es', 'ana@uvg.edu.gt']
+
+================================================================================
+DEMO: PIPELINE COMPLETO
+================================================================================
+
+================================================================================
+TEXTO 1
+================================================================================
+Texto original:
+Hola!!! necesito ayuda con mi cuenta :( mi correo es ana.lopez@uvg.edu.gt
+
+Texto normalizado:
+Hola!!! necesito ayuda con mi cuenta :( mi correo es ana.lopez@uvg.edu.gt
+
+Datos sensibles detectados:
+  - EMAIL: ana.lopez@uvg.edu.gt
+
+Accion recomendada: REDACT
+
+Texto seguro:
+Hola!!! necesito ayuda con mi cuenta :( mi correo es [EMAIL_REDACTED]
+
+Tokens:
+['Hola', '!', '!', '!', 'necesito', 'ayuda', 'con', 'mi', 'cuenta', ':', '(', 'mi', 'correo', 'es', '[', 'EMAIL_REDACTED', ']']
+
+Estadisticas:
+Caracteres: 69
+Tokens: 17
+Tokens unicos: 14
+Top 10 tokens:
+  - !: 3
+  - mi: 2
+  - Hola: 1
+  - necesito: 1
+  - ayuda: 1
+  - con: 1
+  - cuenta: 1
+  - :: 1
+  - (: 1
+  - correo: 1
+
+================================================================================
+TEXTO 2
+================================================================================
+Texto original:
+El modelo GPT-4.1 respondio: 'No tengo suficiente contexto.'
+
+Texto normalizado:
+El modelo GPT-4.1 respondio: 'No tengo suficiente contexto.'
+
+Datos sensibles detectados:
+  No se detectaron datos sensibles.
+
+Accion recomendada: ALLOW
+
+Texto seguro:
+El modelo GPT-4.1 respondio: 'No tengo suficiente contexto.'
+
+Tokens:
+['El', 'modelo', 'GPT', '-', '4', '.', '1', 'respondio', ':', "'", 'No', 'tengo', 'suficiente', 'contexto', '.', "'"]
+
+Estadisticas:
+Caracteres: 60
+Tokens: 16
+Tokens unicos: 14
+Top 10 tokens:
+  - .: 2
+  - ': 2
+  - El: 1
+  - modelo: 1
+  - GPT: 1
+  - -: 1
+  - 4: 1
+  - 1: 1
+  - respondio: 1
+  - :: 1
+
+================================================================================
+TEXTO 3
+================================================================================
+Texto original:
+Mi numero es +502 5555-1234 y mi sitio es https://uvg.edu.gt
+
+Texto normalizado:
+Mi numero es +502 5555-1234 y mi sitio es https://uvg.edu.gt
+
+Datos sensibles detectados:
+  - URL: https://uvg.edu.gt
+  - PHONE: +502 5555-1234
+
+Accion recomendada: REDACT
+
+Texto seguro:
+Mi numero es [PHONE_REDACTED] y mi sitio es [URL_REDACTED]
+
+Tokens:
+['Mi', 'numero', 'es', '[', 'PHONE_REDACTED', ']', 'y', 'mi', 'sitio', 'es', '[', 'URL_REDACTED', ']']
+
+Estadisticas:
+Caracteres: 58
+Tokens: 13
+Tokens unicos: 10
+Top 10 tokens:
+  - es: 2
+  - [: 2
+  - ]: 2
+  - Mi: 1
+  - numero: 1
+  - PHONE_REDACTED: 1
+  - y: 1
+  - mi: 1
+  - sitio: 1
+  - URL_REDACTED: 1
+
+================================================================================
+TEXTO 4
+================================================================================
+Texto original:
+API_KEY=abc123-super-secreta no deberia compartirse con ningun modelo.
+
+Texto normalizado:
+API_KEY=abc123-super-secreta no deberia compartirse con ningun modelo.
+
+Datos sensibles detectados:
+  - SECRET_WORD: API_KEY
+
+Accion recomendada: BLOCK
+
+Texto seguro:
+  [BLOQUEADO: no debe enviarse al modelo]
+
+Tokens:
+[]
+
+Estadisticas:
+  No se calcularon estadisticas porque el texto fue bloqueado.
+
+================================================================================
+TEXTO 5
+================================================================================
+Texto original:
+anticonstitucionalmente, NLP, #IA, www.example.com/manual.pdf
+
+Texto normalizado:
+anticonstitucionalmente, NLP, #IA, www.example.com/manual.pdf
+
+Datos sensibles detectados:
+  - URL: www.example.com/manual.pdf
+
+Accion recomendada: WARN
+
+Texto seguro:
+anticonstitucionalmente, NLP, #IA, www.example.com/manual.pdf
+
+Tokens:
+['anticonstitucionalmente', ',', 'NLP', ',', '#', 'IA', ',', 'www.example.com/manual.pdf']
+
+Estadisticas:
+Caracteres: 61
+Tokens: 8
+Tokens unicos: 6
+Top 10 tokens:
+  - ,: 3
+  - anticonstitucionalmente: 1
+  - NLP: 1
+  - #: 1
+  - IA: 1
+  - www.example.com/manual.pdf: 1
+
+================================================================================
+TEXTO 6
+================================================================================
+Texto original:
+Mi DPI simulado es 1234 56789 0101 y no debe salir del sistema.
+
+Texto normalizado:
+Mi DPI simulado es 1234 56789 0101 y no debe salir del sistema.
+
+Datos sensibles detectados:
+  - DPI: 1234 56789 0101
+
+Accion recomendada: REDACT
+
+Texto seguro:
+Mi DPI simulado es [DPI_REDACTED] y no debe salir del sistema.
+
+Tokens:
+['Mi', 'DPI', 'simulado', 'es', '[', 'DPI_REDACTED', ']', 'y', 'no', 'debe', 'salir', 'del', 'sistema', '.']
+
+Estadisticas:
+Caracteres: 62
+Tokens: 14
+Tokens unicos: 14
+Top 10 tokens:
+  - Mi: 1
+  - DPI: 1
+  - simulado: 1
+  - es: 1
+  - [: 1
+  - DPI_REDACTED: 1
+  - ]: 1
+  - y: 1
+  - no: 1
+  - debe: 1
+
+================================================================================
+TEXTO 7
+================================================================================
+Texto original:
+Contactame al 5882-2503 o al +502 5882-2503, tambien 58822503.
+
+Texto normalizado:
+Contactame al 5882-2503 o al +502 5882-2503, tambien 58822503.
+
+Datos sensibles detectados:
+  - PHONE: 5882-2503
+  - PHONE: +502 5882-2503
+  - PHONE: 58822503
+  - LONG_NUMBER: 58822503
+
+Accion recomendada: REDACT
+
+Texto seguro:
+Contactame al [PHONE_REDACTED] o al [PHONE_REDACTED], tambien [PHONE_REDACTED].
+
+Tokens:
+['Contactame', 'al', '[', 'PHONE_REDACTED', ']', 'o', 'al', '[', 'PHONE_REDACTED', ']', ',', 'tambien', '[', 'PHONE_REDACTED', ']', '.']
+
+Estadisticas:
+Caracteres: 79
+Tokens: 16
+Tokens unicos: 9
+Top 10 tokens:
+  - [: 3
+  - PHONE_REDACTED: 3
+  - ]: 3
+  - al: 2
+  - Contactame: 1
+  - o: 1
+  - ,: 1
+  - tambien: 1
+  - .: 1
+
+================================================================================
+REFLEXION CRITICA (Parte 14)
+--------------------------------------------------------------------------------
+Falsos positivos: el patron PHONE se afino al formato de Guatemala (8 digitos
+4-4, con +502 opcional), lo que evita confundir un DPI con un telefono; aun asi,
+cualquier numero de 8 digitos con esa forma —un codigo de factura o de cuenta—
+se marcara como telefono. LONG_NUMBER agrava esto porque cualquier numero de 8 o
+mas digitos se considera sensible aunque sea un codigo de producto inofensivo.
+EMAIL tambien puede disparar sobre cadenas tipo "usuario@host" que no son correos
+reales.
+
+Falsos negativos: la regex no detecta correos ofuscados ("ana [arroba] uvg punto
+gt"), telefonos escritos con palabras, URLs sin http ni www, secretos con
+nombres distintos a los del diccionario, o un DPI partido en varias lineas. Todo
+dato sensible expresado de forma no estandar escapa a los patrones.
+
+Perdida de informacion al redactar: al reemplazar por [EMAIL_REDACTED] o
+[PHONE_REDACTED] se pierde el dato concreto, pero tambien el contexto: el modelo
+ya no sabe cuantos correos habia, a quien pertenecen ni si dos menciones son la
+misma persona. Esto puede degradar tareas que dependian de esa entidad.
+
+Suficiencia de Regex: no. Regex es una primera capa util y barata, pero fragil
+ante variantes y ofuscacion; en una empresa real generaria fugas y falsos
+positivos costosos. Como capas adicionales agregaria NER/ML para deteccion
+semantica de PII, diccionarios y listas de bloqueo mantenidas, deteccion de
+secretos por entropia, cifrado y control de acceso, y registro de auditoria con
+revision humana antes de enviar datos a un modelo externo.
+

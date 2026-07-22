@@ -47,6 +47,7 @@ TEXTOS_DE_PRUEBA = [
     "API_KEY=abc123-super-secreta no deberia compartirse con ningun modelo.",
     "anticonstitucionalmente, NLP, #IA, www.example.com/manual.pdf",
     "Mi DPI simulado es 1234 56789 0101 y no debe salir del sistema.",
+    "Contactame al 5882-2503 o al +502 5882-2503, tambien 58822503.",
 ]
 
 
@@ -139,7 +140,12 @@ def imprimir_estadisticas(estadisticas):
 PATRONES_SENSIBLES = {
     "EMAIL": r"\b[\w\.-]+@[\w\.-]+\.\w+\b",
     "URL": r"https?://\S+|www\.\S+",
-    "PHONE": r"\+?\d[\d\s\-]{7,}\d",
+    # Telefono de Guatemala: 8 digitos (formato 4-4), con o sin separador, y
+    # con codigo de pais +502 opcional. Cubre:
+    #   +502 5882-2503 | 5882-2503 | 58822503 | +50258822503
+    # (?<!\d) y (?!\d) evitan matchear un tramo de 8 digitos dentro de un
+    # numero mas largo (p. ej. un DPI de 13 digitos).
+    "PHONE": r"(?<!\d)(?:\+?502[\s-]?)?\d{4}[\s-]?\d{4}(?!\d)",
     "SECRET_WORD": r"(?i)\b(password|contrasena|contraseña|clave|secret|token|api_key|apikey)\b",
     # Ejercicio 2: DPI de Guatemala (13 digitos), con o sin espacios/guiones.
     #   1234567890101 | 1234 56789 0101 | 1234-56789-0101
@@ -351,12 +357,53 @@ def demo_guardrails():
 
 
 # -----------------------------------------------------------------------------
-# 9. Programa Principal
+# 9. Reflexion (Parte 14)
+# -----------------------------------------------------------------------------
+
+REFLEXION = """
+REFLEXION CRITICA (Parte 14)
+--------------------------------------------------------------------------------
+Falsos positivos: el patron PHONE se afino al formato de Guatemala (8 digitos
+4-4, con +502 opcional), lo que evita confundir un DPI con un telefono; aun asi,
+cualquier numero de 8 digitos con esa forma —un codigo de factura o de cuenta—
+se marcara como telefono. LONG_NUMBER agrava esto porque cualquier numero de 8 o
+mas digitos se considera sensible aunque sea un codigo de producto inofensivo.
+EMAIL tambien puede disparar sobre cadenas tipo "usuario@host" que no son correos
+reales.
+
+Falsos negativos: la regex no detecta correos ofuscados ("ana [arroba] uvg punto
+gt"), telefonos escritos con palabras, URLs sin http ni www, secretos con
+nombres distintos a los del diccionario, o un DPI partido en varias lineas. Todo
+dato sensible expresado de forma no estandar escapa a los patrones.
+
+Perdida de informacion al redactar: al reemplazar por [EMAIL_REDACTED] o
+[PHONE_REDACTED] se pierde el dato concreto, pero tambien el contexto: el modelo
+ya no sabe cuantos correos habia, a quien pertenecen ni si dos menciones son la
+misma persona. Esto puede degradar tareas que dependian de esa entidad.
+
+Suficiencia de Regex: no. Regex es una primera capa util y barata, pero fragil
+ante variantes y ofuscacion; en una empresa real generaria fugas y falsos
+positivos costosos. Como capas adicionales agregaria NER/ML para deteccion
+semantica de PII, diccionarios y listas de bloqueo mantenidas, deteccion de
+secretos por entropia, cifrado y control de acceso, y registro de auditoria con
+revision humana antes de enviar datos a un modelo externo.
+""".strip()
+
+
+def imprimir_reflexion():
+    print("=" * 80)
+    print(REFLEXION)
+    print()
+
+
+# -----------------------------------------------------------------------------
+# 10. Programa Principal
 # -----------------------------------------------------------------------------
 
 def main():
     demo_comparar_tokenizadores()
     demo_guardrails()
+    imprimir_reflexion()
 
 
 if __name__ == "__main__":
